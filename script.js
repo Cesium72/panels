@@ -15,17 +15,27 @@ let ctx = [];
 let lastActive = 1;
 let sliders = new Array(10).fill(0);
 let modes = new Array(9).fill(0);
+let mouseDown = false;
+window.addEventListener("mouseup", () => {mouseDown = false;});
+
 function circle(n, x, y, r) {
     ctx[n].beginPath();
     ctx[n].arc(x, y, r, 0, Math.PI * 2);
     ctx[n].fill();
+}
+function pos(n, e) {
+    console.log(n);
+    let rect = document.getElementById("c" + n).getBoundingClientRect();
+    return [e.clientX - rect.left, e.clientY - rect.top];
 }
 for(var i = 1; i < 10; i++) {
     ctx.push(document.getElementById("c" + i).getContext("2d"));
     ctx[i - 1].textAlign = "center";
     ctx[i - 1].font = "30px monospace";
     dispCanvas(i - 1);
-    eval(`document.querySelector(\`.panel:nth-child(${i})\`).addEventListener("mousedown", () => active(${i}))`)
+    document.querySelector(`.panel:nth-child(${i})`).addEventListener("mousedown", eval(`() => active(${i})`));
+    document.getElementById("c" + i).addEventListener("mousedown", eval(`((e) => {trigger(${i - 1}, ...pos(${i}, e));mouseDown = true;})`));
+    document.getElementById("c" + i).addEventListener("mousemove", eval(`((e) => {if(mouseDown) trigger(${i - 1}, ...pos(${i}, e));})`))
 }
 
 function grid(col, row) {
@@ -67,6 +77,16 @@ function dispCanvas(n) {
             ctx[n].fillStyle = colors.green;
             circle(n, ...swap(sliders[2 * modes[n] - 2] + 50, 110, modes[n] % 2), 30);
             circle(n, ...swap(sliders[2 * modes[n] - 1] + 50, 290, modes[n] % 2), 30);
+        }
+    }
+}
+
+function trigger(n, x, y) {
+    switch(modes[n]) {
+        case 1:
+        case 3: {
+            console.log({n, x, y});
+            break;
         }
     }
 }
