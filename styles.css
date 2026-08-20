@@ -23,6 +23,7 @@ body {
     width:100vw;
     height:100vh;
 }
+
 #splash h1 {
     color:var(--orange);
     text-align:center;
@@ -30,23 +31,27 @@ body {
     font-size:20vh;
     z-index:1;
 }
+
 #shape, #shape2 {
     width:40vw;
     height:40vw;
     position:absolute;
 }
+
 #shape {
     background-color:var(--green);
     left:70vw;
     top:40vh;
     rotate:35deg;
 }
+
 #shape2 {
     background-color:var(--purple);
     left:-20vw;
     top:30vh;
     rotate:20deg;
 }
+
 #splash button {
     border:5px solid var(--red);
     outline:none;
@@ -62,7 +67,75 @@ body {
     transition:all linear 0.5s;
     z-index:1;
 }
+
 #splash button:hover {
     background-color:var(--red);
     color:var(--blue);
+}
+
+#splash h2 {
+    position:absolute;
+    text-align:center;
+    bottom:4px;
+    width:100vw;
+    color:var(--red);
+}
+
+#game > * {
+    position:absolute;
+    padding:7px;
+}
+
+#side {
+    left:0;
+    width:20vw;
+    height:100vh;
+    overflow:scroll;
+    background-color:var(--blue);
+}
+
+#side h2 {
+    color:var(--orange);
+    font-size:5vh;
+}
+
+#side button {
+    border:none;
+    background:none;
+    outline:none;
+    border-bottom:1px solid var(--red);
+    color:var(--red);
+    font-size:2vh;
+    cursor:pointer;
+    min-width:40%;
+    clear:both;
+    display:block;
+    text-align:center;
+    margin-bottom:6px;
+}
+
+#side button:hover {
+    background-color:var(--red);
+    color:var(--blue);
+}
+
+#main {
+    display:grid;
+    grid-template-columns:auto auto;
+    left:20vw;
+    height:100vh;
+    width:80vw;
+    padding:0;
+    grid-auto-rows:50vh;
+    background-color:#777;
+}
+
+.panel {
+}
+
+canvas {
+    height:90%;
+    aspect-ratio: 1;
+    margin:5% auto;
+    display:block;
 }

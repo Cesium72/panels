@@ -9,12 +9,38 @@
 <body>
     <div id="splash">
         <h1>Panels</h1>
+        <h2>Intended for landscape screens</h2>
         <div id="shape"></div>
         <div id="shape2"></div>
         <button onclick="start();">Start</button>
     </div>
-    <div id="game">
-
+    <div id="game"style="display:none;">
+        <div id="side">
+            <h2>View:</h2>
+            <button onclick="grid(1,1)">Single</button>
+            <button onclick="grid(2,2)">2x2</button>
+            <button onclick="grid(3,2)">2x3</button>
+            <button onclick="grid(3,3)">3x3</button>
+            <h2>Panels:</h2>
+            <button onclick="panel(1)">Sliders 1</button>
+            <button onclick="panel(2)">Sliders 2</button>
+            <button onclick="panel(3)">Sliders 3</button>
+            <button onclick="panel(4)">Sliders 4</button>
+            <button onclick="panel(5)">Sliders 5</button>
+            <button onclick="panel(6)">Grid 1</button>
+            <button onclick="panel(7)">Color Keys</button>
+        </div>
+        <div id="main">
+            <div class="panel"><canvas id="c1" width="400" height="400"></canvas></div>
+            <div class="panel"><canvas id="c2" width="400" height="400"></canvas></div>
+            <div class="panel"><canvas id="c3" width="400" height="400"></canvas></div>
+            <div class="panel"><canvas id="c4" width="400" height="400"></canvas></div>
+            <div class="panel"><canvas id="c5" width="400" height="400"></canvas></div>
+            <div class="panel"><canvas id="c6" width="400" height="400"></canvas></div>
+            <div class="panel"><canvas id="c7" width="400" height="400"></canvas></div>
+            <div class="panel"><canvas id="c8" width="400" height="400"></canvas></div>
+            <div class="panel"><canvas id="c9" width="400" height="400"></canvas></div>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>
