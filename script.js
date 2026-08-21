@@ -13,7 +13,7 @@ function start() {
 
 let ctx = [];
 let lastActive = 1;
-let sliders = new Array(10).fill(0);
+let sliders = new Array(12).fill(0);
 let modes = new Array(9).fill(0);
 let mouseDown = false;
 window.addEventListener("mouseup", () => {mouseDown = false;});
@@ -26,7 +26,7 @@ function circle(n, x, y, r) {
 function pos(n, e) {
     console.log(n);
     let rect = document.getElementById("c" + n).getBoundingClientRect();
-    return [e.clientX - rect.left, e.clientY - rect.top];
+    return [(e.clientX - rect.left) * (400 / rect.width), (e.clientY - rect.top) * (400 / rect.height)];
 }
 for(var i = 1; i < 10; i++) {
     ctx.push(document.getElementById("c" + i).getContext("2d"));
@@ -68,13 +68,14 @@ function dispCanvas(n) {
         case 2:
         case 3:
         case 4: 
-        case 5: {
+        case 5:
+        case 6: {
             ctx[n].fillStyle = colors.blue;
             ctx[n].fillRect(0, 0, 400, 400);
             ctx[n].fillStyle = colors.purple;
             ctx[n].fillRect(...swap(50, 100, modes[n] % 2), ...swap(300, 20, modes[n] % 2));
             ctx[n].fillRect(...swap(50, 280, modes[n] % 2), ...swap(300, 20, modes[n] % 2));
-            ctx[n].fillStyle = colors.green;
+            ctx[n].fillStyle = [colors.orange, colors.green][modes[n] % 2];
             circle(n, ...swap(sliders[2 * modes[n] - 2] + 50, 110, modes[n] % 2), 30);
             circle(n, ...swap(sliders[2 * modes[n] - 1] + 50, 290, modes[n] % 2), 30);
         }
@@ -82,12 +83,29 @@ function dispCanvas(n) {
 }
 
 function trigger(n, x, y) {
+    console.log({n, x, y})
     switch(modes[n]) {
         case 1:
-        case 3: {
-            console.log({n, x, y});
+        case 3:
+        case 5: {
+            if(y > 50 && y < 350 && x > 90 && x < 310) {
+                if(x < 130) sliders[2 * modes[n] - 2] = y - 50;
+                if(x > 270) sliders[2 * modes[n] - 1] = y - 50;
+            }
             break;
         }
+        case 2:
+        case 4:
+        case 6: {
+            if(x > 50 && x < 350 && y > 90 && y < 310) {
+                if(y < 130) sliders[2 * modes[n] - 2] = x - 50;
+                if(y > 270) sliders[2 * modes[n] - 1] = x - 50;
+            }
+            break;
+        }
+    }
+    for(var i = 0; i < 10; i++) {
+        dispCanvas(i);
     }
 }
 
