@@ -1,3 +1,4 @@
+//line 31
 const colors = {
     orange:"#ff9000",
     blue:"#7d83ff",
@@ -6,7 +7,7 @@ const colors = {
     red:"#c33c54",
 };
 
-const names = ["No panel", "Sliders 1", "Sliders 2", "Sliders 3", "Sliders 4", "Sliders 5", "Sliders 6", "Grid 1", "Grid 2"];
+const names = ["No panel", "Sliders 1", "Sliders 2", "Sliders 3", "Sliders 4", "Sliders 5", "Sliders 6", "Grid 1", "Grid 2", "Circle 1", "Circle 2", "Circle 3", "Circle 4"];
 
 function start() {
     document.getElementById("splash").style.display = "none";
@@ -20,6 +21,18 @@ let modes = new Array(9).fill(0);
 let mouseDown = false;
 let stage = 0;
 let max = 4;
+let circles = [
+    [3, 4, 3, 2],
+    [1, 2, 4, 3],
+    [4, 1, 1, 4],
+    [1, 2, 3, 2]
+];
+let ticTacToe = new Array(9).fill(0);
+function tttPick() {
+
+}
+const tttOrder = [8, 2, 5, 0, 1, 3, 6, 4, 7];
+const slice = Math.PI / 2;
 window.addEventListener("mouseup", () => {mouseDown = false;});
 
 function unlock(n) {
@@ -133,6 +146,52 @@ function dispCanvas(n) {
             circle(n, sliders[6] + 50, sliders[8] + 50, 10);
             break;
         }
+        case 9:
+        case 10:
+        case 11:
+        case 12: {
+            ctx[n].fillStyle = colors.blue;
+            ctx[n].fillRect(0, 0, 400, 400);
+            ctx[n].beginPath();
+            ctx[n].moveTo(200, 200);
+            ctx[n].fillStyle = [colors.green, colors.orange, colors.purple, colors.red][circles[modes[n] - 9][0] - 1];
+            ctx[n].arc(200, 200, 100, 0, slice);
+            ctx[n].closePath();
+            ctx[n].fill();
+            ctx[n].beginPath();
+            ctx[n].moveTo(200, 200);
+            ctx[n].fillStyle = [colors.green, colors.orange, colors.purple, colors.red][circles[modes[n] - 9][1] - 1];
+            ctx[n].arc(200, 200, 100, slice, 2 * slice);
+            ctx[n].closePath();
+            ctx[n].fill();
+            ctx[n].beginPath();
+            ctx[n].moveTo(200, 200);
+            ctx[n].fillStyle = [colors.green, colors.orange, colors.purple, colors.red][circles[modes[n] - 9][2] - 1];
+            ctx[n].arc(200, 200, 100, 2 * slice, 3 * slice);
+            ctx[n].closePath();
+            ctx[n].fill();
+            ctx[n].beginPath();
+            ctx[n].moveTo(200, 200);
+            ctx[n].fillStyle = [colors.green, colors.orange, colors.purple, colors.red][circles[modes[n] - 9][3] - 1];
+            ctx[n].arc(200, 200, 100, 3 * slice, 4 * slice);
+            ctx[n].closePath();
+            ctx[n].fill();
+            ctx[n].fillStyle = [colors.green, colors.orange, colors.purple, colors.red][modes[n] - 9];
+            circle(n, 200, 200, 50);
+            break;
+        }
+        case 13:
+        case 14:
+        case 15:
+        case 16:
+        case 17:
+        case 18:
+        case 19:
+        case 20:
+        case 21: {
+
+            break;
+        }
     }
 }
 
@@ -156,6 +215,42 @@ function trigger(n, x, y) {
             }
             break;
         }
+        case 9:
+        case 10:
+        case 11:
+        case 12: {
+            if((x - 200) ** 2 + (y - 200) ** 2 <= 2500) {
+                circles[modes[n] - 9] = [
+                    circles[modes[n] - 9][3],
+                    circles[modes[n] - 9][0],
+                    circles[modes[n] - 9][1],
+                    circles[modes[n] - 9][2]
+                ]
+                break;
+            }
+            if(x > 200) {
+                if(y > 200) {
+                    let tmp = circles[((modes[n] - 9) + 1) % 4][0];
+                    circles[((modes[n] - 9) + 1) % 4][0] = circles[modes[n] - 9][0];
+                    circles[modes[n] - 9][0] = tmp;
+                    break;
+                }
+                let tmp = circles[((modes[n] - 9) + 1) % 4][3];
+                circles[((modes[n] - 9) + 1) % 4][3] = circles[modes[n] - 9][3];
+                circles[modes[n] - 9][3] = tmp;
+                break;
+            }
+            if(y > 200) {
+                let tmp = circles[((modes[n] - 9) + 1) % 4][1];
+                circles[((modes[n] - 9) + 1) % 4][1] = circles[modes[n] - 9][1];
+                circles[modes[n] - 9][1] = tmp;
+                break;
+            }
+            let tmp = circles[((modes[n] - 9) + 1) % 4][2];
+            circles[((modes[n] - 9) + 1) % 4][2] = circles[modes[n] - 9][2];
+            circles[modes[n] - 9][2] = tmp;
+            break;
+        }
     }
     if(stage == 0 && JSON.stringify(sliders.map(a => Math.floor(a/50) * 50)) == "[100,0,50,250,200,150,0,150,250,50,100,200]") {
         stage++;
@@ -167,6 +262,10 @@ function trigger(n, x, y) {
         unlock(10);
         unlock(11);
         unlock(12);
+    }
+    if(stage == 2 && JSON.stringify(circles) == "[[1,1,1,1],[2,2,2,2],[3,3,3,3],[4,4,4,4]]") {
+        stage++;
+        alert("Game over (For now)");
     }
     for(var i = 0; i < 10; i++) {
         dispCanvas(i);
