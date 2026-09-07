@@ -7,7 +7,7 @@ const colors = {
     red:"#c33c54",
 };
 
-const names = ["No panel", "Sliders 1", "Sliders 2", "Sliders 3", "Sliders 4", "Sliders 5", "Sliders 6", "Grid 1", "Grid 2", "Circle 1", "Circle 2", "Circle 3", "Circle 4"];
+const names = ["No panel", "Sliders 1", "Sliders 2", "Sliders 3", "Sliders 4", "Sliders 5", "Sliders 6", "Grid 1", "Grid 2", "Circle 1", "Circle 2", "Circle 3", "Circle 4", "Tic-Tac-Toe 1", "Tic-Tac-Toe 2", "Tic-Tac-Toe 3", "Tic-Tac-Toe 4", "Tic-Tac-Toe 5", "Tic-Tac-Toe 6", "Tic-Tac-Toe 7", "Tic-Tac-Toe 8", "Tic-Tac-Toe 9"];
 
 function start() {
     document.getElementById("splash").style.display = "none";
@@ -27,11 +27,15 @@ let circles = [
     [4, 1, 1, 4],
     [1, 2, 3, 2]
 ];
-let ticTacToe = new Array(9).fill(0);
-function tttPick() {
-
-}
+let gameOver = false;
 const tttOrder = [8, 2, 5, 0, 1, 3, 6, 4, 7];
+const tttPriority = [4, 0, 8, 2, 6, 1, 3, 5, 7];
+let ticTacToe = /*new Array(9).fill(0)*/[0, 0, -1, 0, 1, 0, 0, 0, 0];
+function tttPick() {
+    for(var i of tttPriority) {
+        if(ticTacToe[tttOrder[i]] == 0) return i;
+    }
+}
 const slice = Math.PI / 2;
 window.addEventListener("mouseup", () => {mouseDown = false;});
 
@@ -44,6 +48,41 @@ function circle(n, x, y, r) {
     ctx[n].arc(x, y, r, 0, Math.PI * 2);
     ctx[n].fill();
 }
+function line(n, x1, y1, x2, y2) {
+    ctx[n].beginPath();
+    ctx[n].moveTo(x1, y1);
+    ctx[n].lineTo(x2, y2);
+    ctx[n].stroke();
+}
+
+function win() {
+    alert("Yay! You win.\n(Something exciting will happen later)");
+}
+
+function handleWin(index, n) {
+    let item = ticTacToe[tttOrder[index]];
+    if((index % 3 == 0 && item != 0 && item == ticTacToe[tttOrder[index + 1]] && item == ticTacToe[tttOrder[index + 2]]) || (index % 3 == 1 && item != 0 && item == ticTacToe[tttOrder[index + 1]] && item == ticTacToe[tttOrder[index - 1]]) || (index % 3 == 2 && item != 0 && item == ticTacToe[tttOrder[index - 1]] && item == ticTacToe[tttOrder[index - 2]])) {
+        line(n, 0, 200, 400, 200);
+        if(item == 1) return (gameOver = true);
+        win();
+    }
+    if((index < 3 && item != 0 && item == ticTacToe[tttOrder[index + 3]] && item == ticTacToe[tttOrder[index + 6]]) || (index >= 3 && item != 0 && index < 6 && item == ticTacToe[tttOrder[index + 3]] && item == ticTacToe[tttOrder[index - 3]]) || (index >= 6 && item != 0 && item == ticTacToe[tttOrder[index - 3]] && item == ticTacToe[tttOrder[index - 6]])) {
+        line(n, 200, 0, 200, 400);
+        if(item == 1) return (gameOver = true);
+        win();
+    }
+    if(index % 4 == 0 && item != 0 && ticTacToe[tttOrder[0]] == ticTacToe[tttOrder[4]] && ticTacToe[tttOrder[0]] == ticTacToe[tttOrder[8]]) {
+        line(n, 0, 0, 400, 400);
+        if(item == 1) return (gameOver = true);
+        win();
+    }
+    if([2, 4, 6].includes(index) && item != 0 && ticTacToe[tttOrder[2]] == ticTacToe[tttOrder[4]] && ticTacToe[tttOrder[2]] == ticTacToe[tttOrder[6]]) {
+        line(n, 0, 400, 400, 0);
+        if(item == 1) return (gameOver = true);
+        win();
+    }
+}
+
 function pos(n, e) {
     let rect = document.getElementById("c" + n).getBoundingClientRect();
     return [(e.clientX - rect.left) * (400 / rect.width), (e.clientY - rect.top) * (400 / rect.height)];
@@ -52,6 +91,8 @@ for(var i = 1; i < 10; i++) {
     ctx.push(document.getElementById("c" + i).getContext("2d"));
     ctx[i - 1].textAlign = "center";
     ctx[i - 1].font = "30px monospace";
+    ctx[i - 1].strokeStyle = colors.orange;
+    ctx[i - 1].lineWidth = 10;
     dispCanvas(i - 1);
     document.querySelector(`.panel:nth-child(${i})`).addEventListener("mousedown", eval(`() => active(${i})`));
     document.getElementById("c" + i).addEventListener("mousedown", eval(`((e) => {trigger(${i - 1}, ...pos(${i}, e));mouseDown = true;})`));
@@ -189,7 +230,17 @@ function dispCanvas(n) {
         case 19:
         case 20:
         case 21: {
-
+            ctx[n].fillStyle = colors.blue;
+            ctx[n].fillRect(0, 0, 400, 400);
+            let tile = ticTacToe[tttOrder[modes[n] - 13]];
+            if(tile == -1) {
+                ctx[n].fillStyle = colors.green;
+                circle(n, 200, 200, 100);
+            } else if(tile == 1) {
+                ctx[n].fillStyle = colors.red;
+                circle(n, 200, 200, 100)
+            }
+            handleWin(modes[n] - 13, n);
             break;
         }
     }
@@ -251,6 +302,26 @@ function trigger(n, x, y) {
             circles[modes[n] - 9][2] = tmp;
             break;
         }
+        case 13:
+        case 14:
+        case 15:
+        case 16:
+        case 17:
+        case 18:
+        case 19:
+        case 20:
+        case 21: {
+            if(gameOver || !ticTacToe.includes(0)) {
+                ticTacToe = new Array(9).fill(0);
+                gameOver = false;
+                break;
+            }
+            if(ticTacToe[tttOrder[modes[n] - 13]] == 0) {
+                ticTacToe[tttOrder[modes[n] - 13]] = -1;
+                if(ticTacToe.includes(0)) ticTacToe[tttPick()] = 1;
+            }
+            break;
+        }
     }
     if(stage == 0 && JSON.stringify(sliders.map(a => Math.floor(a/50) * 50)) == "[100,0,50,250,200,150,0,150,250,50,100,200]") {
         stage++;
@@ -265,7 +336,9 @@ function trigger(n, x, y) {
     }
     if(stage == 2 && JSON.stringify(circles) == "[[1,1,1,1],[2,2,2,2],[3,3,3,3],[4,4,4,4]]") {
         stage++;
-        alert("Game over (For now)");
+        for(var i = 13; i <= 21; i++) {
+            unlock(i);
+        }
     }
     for(var i = 0; i < 10; i++) {
         dispCanvas(i);
