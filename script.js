@@ -7,7 +7,7 @@ const colors = {
     red:"#c33c54",
 };
 
-const names = ["No panel", "Sliders 1", "Sliders 2", "Sliders 3", "Sliders 4", "Sliders 5", "Sliders 6", "Grid 1", "Grid 2", "Circle 1", "Circle 2", "Circle 3", "Circle 4", "Tic-Tac-Toe 1", "Tic-Tac-Toe 2", "Tic-Tac-Toe 3", "Tic-Tac-Toe 4", "Tic-Tac-Toe 5", "Tic-Tac-Toe 6", "Tic-Tac-Toe 7", "Tic-Tac-Toe 8", "Tic-Tac-Toe 9"];
+const names = ["No panel", "Sliders 1", "Sliders 2", "Sliders 3", "Sliders 4", "Sliders 5", "Sliders 6", "Grid 1", "Grid 2", "Circle 1", "Circle 2", "Circle 3", "Circle 4", "Tic-Tac-Toe 8", "Tic-Tac-Toe 2", "Tic-Tac-Toe 5", "Tic-Tac-Toe 9", "Tic-Tac-Toe 1", "Tic-Tac-Toe 3", "Tic-Tac-Toe 6", "Tic-Tac-Toe 4", "Tic-Tac-Toe 7"];
 
 function start() {
     document.getElementById("splash").style.display = "none";
@@ -20,6 +20,7 @@ let sliders = new Array(12).fill(0);
 let modes = new Array(9).fill(0);
 let mouseDown = false;
 let stage = 0;
+let won = false;
 let max = 4;
 let circles = [
     [3, 4, 3, 2],
@@ -28,12 +29,11 @@ let circles = [
     [1, 2, 3, 2]
 ];
 let gameOver = false;
-const tttOrder = [8, 2, 5, 0, 1, 3, 6, 4, 7];
 const tttPriority = [4, 0, 8, 2, 6, 1, 3, 5, 7];
 let ticTacToe = /*new Array(9).fill(0)*/[0, 0, -1, 0, 1, 0, 0, 0, 0];
 function tttPick() {
     for(var i of tttPriority) {
-        if(ticTacToe[tttOrder[i]] == 0) return i;
+        if(ticTacToe[i] == 0) return i;
     }
 }
 const slice = Math.PI / 2;
@@ -56,27 +56,29 @@ function line(n, x1, y1, x2, y2) {
 }
 
 function win() {
+    if(won) return;
+    won = true;
     alert("Yay! You win.\n(Something exciting will happen later)");
 }
 
 function handleWin(index, n) {
-    let item = ticTacToe[tttOrder[index]];
-    if((index % 3 == 0 && item != 0 && item == ticTacToe[tttOrder[index + 1]] && item == ticTacToe[tttOrder[index + 2]]) || (index % 3 == 1 && item != 0 && item == ticTacToe[tttOrder[index + 1]] && item == ticTacToe[tttOrder[index - 1]]) || (index % 3 == 2 && item != 0 && item == ticTacToe[tttOrder[index - 1]] && item == ticTacToe[tttOrder[index - 2]])) {
+    let item = ticTacToe[index];
+    if((index % 3 == 0 && item != 0 && item == ticTacToe[index + 1] && item == ticTacToe[index + 2]) || (index % 3 == 1 && item != 0 && item == ticTacToe[index + 1] && item == ticTacToe[index - 1]) || (index % 3 == 2 && item != 0 && item == ticTacToe[index - 1] && item == ticTacToe[index - 2])) {
         line(n, 0, 200, 400, 200);
         if(item == 1) return (gameOver = true);
         win();
     }
-    if((index < 3 && item != 0 && item == ticTacToe[tttOrder[index + 3]] && item == ticTacToe[tttOrder[index + 6]]) || (index >= 3 && item != 0 && index < 6 && item == ticTacToe[tttOrder[index + 3]] && item == ticTacToe[tttOrder[index - 3]]) || (index >= 6 && item != 0 && item == ticTacToe[tttOrder[index - 3]] && item == ticTacToe[tttOrder[index - 6]])) {
+    if((index < 3 && item != 0 && item == ticTacToe[index + 3] && item == ticTacToe[index + 6]) || (index >= 3 && item != 0 && index < 6 && item == ticTacToe[index + 3] && item == ticTacToe[index - 3]) || (index >= 6 && item != 0 && item == ticTacToe[index - 3] && item == ticTacToe[index - 6])) {
         line(n, 200, 0, 200, 400);
         if(item == 1) return (gameOver = true);
         win();
     }
-    if(index % 4 == 0 && item != 0 && ticTacToe[tttOrder[0]] == ticTacToe[tttOrder[4]] && ticTacToe[tttOrder[0]] == ticTacToe[tttOrder[8]]) {
+    if(index % 4 == 0 && item != 0 && ticTacToe[0] == ticTacToe[4] && ticTacToe[0] == ticTacToe[8]) {
         line(n, 0, 0, 400, 400);
         if(item == 1) return (gameOver = true);
         win();
     }
-    if([2, 4, 6].includes(index) && item != 0 && ticTacToe[tttOrder[2]] == ticTacToe[tttOrder[4]] && ticTacToe[tttOrder[2]] == ticTacToe[tttOrder[6]]) {
+    if([2, 4, 6].includes(index) && item != 0 && ticTacToe[2] == ticTacToe[4] && ticTacToe[2] == ticTacToe[6]) {
         line(n, 0, 400, 400, 0);
         if(item == 1) return (gameOver = true);
         win();
@@ -118,6 +120,7 @@ function active(n) {
 const swap = (x, y, pred) => pred ? [y, x] : [x, y];
 
 function dispCanvas(n) {
+    if(won) return;
     switch(modes[n]) {
         case 0: {
             ctx[n].fillStyle = colors.blue;
@@ -232,7 +235,7 @@ function dispCanvas(n) {
         case 21: {
             ctx[n].fillStyle = colors.blue;
             ctx[n].fillRect(0, 0, 400, 400);
-            let tile = ticTacToe[tttOrder[modes[n] - 13]];
+            let tile = ticTacToe[modes[n] - 13];
             if(tile == -1) {
                 ctx[n].fillStyle = colors.green;
                 circle(n, 200, 200, 100);
@@ -316,8 +319,8 @@ function trigger(n, x, y) {
                 gameOver = false;
                 break;
             }
-            if(ticTacToe[tttOrder[modes[n] - 13]] == 0) {
-                ticTacToe[tttOrder[modes[n] - 13]] = -1;
+            if(ticTacToe[modes[n] - 13] == 0) {
+                ticTacToe[modes[n] - 13] = -1;
                 if(ticTacToe.includes(0)) ticTacToe[tttPick()] = 1;
             }
             break;
@@ -336,8 +339,8 @@ function trigger(n, x, y) {
     }
     if(stage == 2 && JSON.stringify(circles) == "[[1,1,1,1],[2,2,2,2],[3,3,3,3],[4,4,4,4]]") {
         stage++;
-        for(var i = 13; i <= 21; i++) {
-            unlock(i);
+        for(var i of [5, 2, 6, 8, 3, 7, 9, 1, 4]) {
+            unlock(i + 12);
         }
     }
     for(var i = 0; i < 10; i++) {
