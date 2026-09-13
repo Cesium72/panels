@@ -30,7 +30,7 @@ let circles = [
 ];
 let gameOver = false;
 const tttPriority = [4, 0, 8, 2, 6, 1, 3, 5, 7];
-let ticTacToe = /*new Array(9).fill(0)*/[0, 0, -1, 0, 1, 0, 0, 0, 0];
+let ticTacToe = new Array(9).fill(0);
 function tttPick() {
     for(var i of tttPriority) {
         if(ticTacToe[i] == 0) return i;
@@ -58,7 +58,8 @@ function line(n, x1, y1, x2, y2) {
 function win() {
     if(won) return;
     won = true;
-    alert("Yay! You win.\n(Something exciting will happen later)");
+    document.getElementById("game").style.display = "none";
+    document.getElementById("win").style.display = "block";
 }
 
 function handleWin(index, n) {
